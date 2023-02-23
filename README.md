@@ -1,3 +1,1 @@
-# ChatGPT-Telegram-Bot
 
-6286777391:AAF9yKnqcPgSVDTjVpZS2rCzM0PQE_HIxLY
