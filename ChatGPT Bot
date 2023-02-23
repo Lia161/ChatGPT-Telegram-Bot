@@ -1,0 +1,42 @@
+    import telegram
+from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
+import openai
+import os
+
+# Set up the OpenAI API credentials
+openai.api_key = os.environ.get("OPENAI_API_KEY")
+
+# Define the handler function for the /start command
+def start(update, context):
+    update.message.reply_text(
+        "Hi! I'm a language model trained by OpenAI. You can ask me anything and I'll do my best to provide an answer. Just type your message and send it to me!"
+    )
+
+# Define the handler function for regular messages
+def reply(update, context):
+    # Get the user's message
+    message = update.message.text
+    
+    # Call the OpenAI API to generate a response
+    response = openai.Completion.create(
+        engine="davinci", prompt=message, max_tokens=1024, n=1, stop=None, temperature=0.5
+    )
+    
+    # Send the response back to the user
+    update.message.reply_text(response.choices[0].text)
+
+# Set up the Telegram bot
+bot = telegram.Bot(token="YOUR_API_TOKEN")
+updater = Updater(token="YOUR_API_TOKEN", use_context=True)
+dispatcher = updater.dispatcher
+
+# Register the handler functions
+start_handler = CommandHandler("start", start)
+reply_handler = MessageHandler(Filters.text & ~Filters.command, reply)
+dispatcher.add_handler(start_handler)
+dispatcher.add_handler(reply_handler)
+
+# Start the bot
+updater.start_polling()
+updater.idle()
+
